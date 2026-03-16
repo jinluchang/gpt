@@ -63,6 +63,7 @@ from gpt.core.checkerboard import (
     odd,
     none,
     str_to_cb,
+    even_odd_projectors,
 )
 from gpt.core.operator import *
 from gpt.core.object_type import *
