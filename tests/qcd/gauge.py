@@ -472,8 +472,8 @@ if True:
 pt = g.qcd.gauge.smear.parallel_transport(
     U,
     [
-        [(0.1, g.path().f(nu).f(mu).b(nu)) for nu in range(4) if mu != nu]
-        + [(0.1, g.path().b(nu).f(mu).f(nu)) for nu in range(4) if mu != nu]
+        [(0.1, g.path().f(nu).f(mu).b(nu).b(mu)) for nu in range(4) if mu != nu]
+        + [(0.1, g.path().b(nu).f(mu).f(nu).b(mu)) for nu in range(4) if mu != nu]
         for mu in range(4)
     ],
 )

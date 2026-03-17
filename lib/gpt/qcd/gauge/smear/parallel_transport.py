@@ -19,7 +19,7 @@
 import gpt as g
 
 
-def parallel_transport(U, description):
+def parallel_transport(U, description, P0=None, P1=None):
     assert len(description) == len(U)
     nd = len(U)
 
@@ -32,12 +32,19 @@ def parallel_transport(U, description):
             cache[cache_key] = g.parallel_transport(xU, paths)
 
         pt = cache[cache_key]
-        sU = list(pt(xU))
+        if P0 is not None:
+            xU_P0 = [g(xU[i] * P0[i]) for i in range(nd)]
+        else:
+            xU_P0 = xU
+
+        sU = list(pt(xU_P0))
         idx = 0
         sm = [None] * nd
         for i in range(nd):
             for weight, path in description[i]:
                 xp = weight * sU[idx]
+                if P1 is not None:
+                    xp *= P1[i]
                 if sm[i] is None:
                     sm[i] = xp
                 else:
@@ -47,7 +54,7 @@ def parallel_transport(U, description):
                 sm[i] = xU[i]
             else:
                 sm[i] = g(
-                    g.matrix.exp(g.qcd.gauge.project.traceless_anti_hermitian(sm[i] * g.adj(xU[i])))
+                    g.matrix.exp(g.qcd.gauge.project.traceless_anti_hermitian(sm[i]))
                     * xU[i]
                 )
         return sm
