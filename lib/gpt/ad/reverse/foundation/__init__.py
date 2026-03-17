@@ -155,3 +155,27 @@ def astype(x, y):
         _container=z_container,
         _tag="astype(" + str(x._container) + "," + str(y) + ")",
     )
+
+
+def cshift_plan_add(self, fields, displacements):
+    indices = {}
+    for d in displacements:
+        indices[d] = self.index
+        self.index += 1
+    self.indices.append(indices)
+    return indices
+
+
+def cshift_plan_execute(self):
+    def _executer(first, second=None):
+        assert second is None
+        ret = []
+        for i, displacements in enumerate(self.displacements):
+            for d in displacements:
+                ret.append(first[i])
+                for dir, disp in enumerate(d):
+                    if disp != 0:
+                        ret[-1] = g.cshift(ret[-1], dir, disp)
+        return ret
+
+    return _executer

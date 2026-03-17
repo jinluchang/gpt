@@ -467,3 +467,26 @@ if True:
         eps2 = g.norm2(U0[mu] - U[mu]) / g.norm2(U[mu])
         g.message("Test invertibility:", eps2)
         assert eps2 < 1e-25
+
+# test stout smearing against general parallel_transport smearing
+pt = g.qcd.gauge.smear.parallel_transport(
+    U,
+    [
+        [(0.1, g.path().f(nu).f(mu).b(nu)) for nu in range(4) if mu != nu]
+        + [(0.1, g.path().b(nu).f(mu).f(nu)) for nu in range(4) if mu != nu]
+        for mu in range(4)
+    ],
+)
+st = g.qcd.gauge.smear.stout(rho=0.1)
+st0 = pt(U)
+st1 = st(U)
+A = [g.group.cartesian(U[0]) for _ in range(4)]
+rng.element(A)
+Aprime1 = st.jacobian(U, st1, A)
+Aprime0 = pt.jacobian(U, st0, A)
+eps = sum(g.norm2(x - y) for x, y in zip(st0, st1)) / sum(g.norm2(x) for x in st0)
+g.message(f"Parallel transport version of stout - smearing: {eps}")
+assert eps < 1e-25
+eps = sum(g.norm2(x - y) for x, y in zip(Aprime0, Aprime1)) / sum(g.norm2(x) for x in Aprime0)
+g.message(f"Parallel transport version of stout - jacobian: {eps}")
+assert eps < 1e-25

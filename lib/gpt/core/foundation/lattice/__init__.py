@@ -20,7 +20,7 @@ import gpt
 import cgpt
 import numpy
 import gpt.core.foundation.lattice.matrix
-
+from gpt.core.foundation.lattice.cshift_plan import cshift_plan_execute, cshift_plan_add
 
 fingerprint = gpt.default.get_int("--fingerprint", 0) > 1
 
