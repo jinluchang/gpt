@@ -71,22 +71,8 @@ pt_o = [
     for j in range(4)
 ]
 
-rho *= -1
-inv_pt_e = [
-    g.qcd.gauge.smear.parallel_transport(U, [
-        [(rho if mu < nu else -rho, g.path().f(nu).f(mu).b(nu,2).b(mu).f(nu)) for nu in range(4) if mu != nu]
-        for mu in range(4)
-    ], [even if i == j else full for i in range(4)], [odd if i == j else none for i in range(4)])
-    for j in range(4)
-]
-
-inv_pt_o = [
-    g.qcd.gauge.smear.parallel_transport(U, [
-        [(rho if mu < nu else -rho, g.path().f(nu).f(mu).b(nu,2).b(mu).f(nu)) for nu in range(4) if mu != nu]
-        for mu in range(4)
-    ], [odd if i == j else full for i in range(4)], [even if i == j else none for i in range(4)])
-    for j in range(4)
-]
+inv_pt_e = [x.inv() for x in pt_e]
+inv_pt_o = [x.inv() for x in pt_o]
 
 for j in range(4):
     test_U = inv_pt_e[j](pt_e[j](U))
@@ -131,7 +117,7 @@ sympl = g.algorithms.integrator.symplectic
 
 ip = sympl.update_p(p_mom, lambda: a1.gradient(U, U))
 iq = sympl.update_q(U, lambda: a0.gradient(p_mom, p_mom))
-integrator = sympl.OMF2(noutersteps, ip, iq)
+integrator = sympl.OMF4(noutersteps, ip, iq)
 
 # integrator
 g.message(f"Integration scheme:\n{integrator}")
@@ -167,6 +153,8 @@ for i in range(i0, n):
 
     P = g.qcd.gauge.plaquette(Usm)
     g.message(f"Trajectory {i}, P={P} (integration {g.qcd.gauge.plaquette(U)}), dH={dH}")
+    for xx in [1,2,3,4]:
+        g.message(f"{xx} x 1 rectangle for physical field {g.qcd.gauge.rectangle(Usm, xx, 1)} versus integration variable {g.qcd.gauge.rectangle(U, xx, 1)}")
 
     # polyakov
     PL = g.identity(Usm[3])
@@ -195,5 +183,5 @@ for i in range(i0, n):
 
     g.barrier()
 
-    g.save(f"{root}/ckpoint_lat.{i}", U, g.format.nersc())
+    g.save(f"{root}/ckpoint_lat.{i}", Usm, g.format.nersc())
 
