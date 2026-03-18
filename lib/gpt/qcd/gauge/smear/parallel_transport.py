@@ -17,46 +17,56 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 import gpt as g
+from gpt.qcd.gauge.smear.differentiable import dft_diffeomorphism
 
 
-def parallel_transport(U, description, P0=None, P1=None):
-    assert len(description) == len(U)
-    nd = len(U)
+class parallel_transport(dft_diffeomorphism):
+    def __init__(self, U, description, P0=None, P1=None):
+        self.description = description
+        self.U = U
+        self.P0 = P0
+        self.P1 = P1
 
-    cache = {}
+        assert len(description) == len(U)
+        nd = len(U)
 
-    def ft(xU):
-        cache_key = f"{type(xU[0])}"
-        if cache_key not in cache:
-            paths = [y[1] for x in description for y in x]
-            cache[cache_key] = g.parallel_transport(xU, paths)
+        cache = {}
 
-        pt = cache[cache_key]
-        if P0 is not None:
-            xU_P0 = [g(xU[i] * P0[i]) for i in range(nd)]
-        else:
-            xU_P0 = xU
+        def ft(xU):
+            cache_key = f"{type(xU[0])}"
+            if cache_key not in cache:
+                paths = [y[1] for x in description for y in x]
+                cache[cache_key] = g.parallel_transport(xU, paths)
 
-        sU = list(pt(xU_P0))
-        idx = 0
-        sm = [None] * nd
-        for i in range(nd):
-            for weight, path in description[i]:
-                xp = weight * sU[idx]
-                if P1 is not None:
-                    xp *= P1[i]
-                if sm[i] is None:
-                    sm[i] = xp
-                else:
-                    sm[i] += xp
-                idx += 1
-            if sm[i] is None:
-                sm[i] = xU[i]
+            pt = cache[cache_key]
+            if P0 is not None:
+                xU_P0 = [g(xU[i] * P0[i]) for i in range(nd)]
             else:
-                sm[i] = g(
-                    g.matrix.exp(g.qcd.gauge.project.traceless_anti_hermitian(sm[i]))
-                    * xU[i]
-                )
-        return sm
+                xU_P0 = xU
 
-    return g.qcd.gauge.smear.differentiable.dft_diffeomorphism(U, ft)
+            sU = list(pt(xU_P0))
+            idx = 0
+            sm = [None] * nd
+            for i in range(nd):
+                for weight, path in description[i]:
+                    xp = weight * sU[idx]
+                    if P1 is not None:
+                        xp *= P1[i]
+                    if sm[i] is None:
+                        sm[i] = xp
+                    else:
+                        sm[i] += xp
+                    idx += 1
+                if sm[i] is None:
+                    sm[i] = xU[i]
+                else:
+                    sm[i] = g(
+                        g.matrix.exp(g.qcd.gauge.project.traceless_anti_hermitian(sm[i])) * xU[i]
+                    )
+            return sm
+
+        super().__init__(U, ft)
+
+    def inv(self):
+        description = [[(-y[0], y[1]) for y in x] for x in self.description]
+        return parallel_transport(self.U, description, self.P0, self.P1)
