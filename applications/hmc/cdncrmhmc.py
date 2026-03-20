@@ -18,8 +18,8 @@ implicit_eps = g.default.get_float("--eps", 1e-9)
 dist_coef = [float(x) for x in g.default.get("--dc", None).split(";")]
 g.default.set_verbose("omf4")
 
-#grid = g.grid([32, 32, 32, 48], g.double)
-grid = g.grid([8, 8, 8, 8], g.double)
+grid = g.grid([32, 32, 32, 48], g.double)
+#grid = g.grid([8, 8, 8, 8], g.double)
 rng = g.random(seed)
 
 U = g.qcd.gauge.random(grid, rng)
@@ -151,17 +151,21 @@ for i in range(i0, n):
         flog.write(f"P {P}\n")
         for p in polyakov:
             flog.write(f"L {p[0].real} {p[0].imag}\n")
-        # and wilson flowed energy
-        Uwf = U
-        twf = 0.0
-        for _ in range(20):
-            Uwf = g.qcd.gauge.smear.wilson_flow(Uwf, epsilon=0.1)
-            twf += 0.1
-            E = g.qcd.gauge.energy_density(Uwf).real
-            Q = g.qcd.gauge.topological_charge(Uwf).real
+    # and wilson flowed energy
+    Uwf = U
+    twf = 0.0
+    for _ in range(80):
+        g.message("Wilson flow", twf)
+        Uwf = g.qcd.gauge.smear.wilson_flow(Uwf, epsilon=0.1)
+        twf += 0.1
+        E = g.qcd.gauge.energy_density(Uwf).real
+        Q = g.qcd.gauge.topological_charge(Uwf).real
+        if g.rank() == 0:
             flog.write(f"EQ {twf} {E} {Q}\n")
+            flog.flush()
 
-        g.message(f"At twf={twf}: E = {E}, Q = {Q}")
+    g.message(f"At twf={twf}: E = {E}, Q = {Q}")
+    if g.rank() == 0:
         flog.close()
 
     g.barrier()
