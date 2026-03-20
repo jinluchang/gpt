@@ -78,7 +78,7 @@ class complement:
         left1 = [g(self.P1[i] * left[i]) for i in range(len(self.P1))]
         grad10 = self.f.projected_gradient(left1, U, right0)
         grad01 = self.f.projected_gradient(left0, U, right1)
-        # missing P0 T^2 P0
+
         T_right0 = g.copy(right0)
         self.f(g.copy(U) + T_right0, U + right0)
         for x in T_right0:

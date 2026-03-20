@@ -154,7 +154,7 @@ class general_mass_term(differentiable_functional):
         pi_prime = self.inv_M(fields)[n:]
         A = 0.0
         for mu in range(n):
-            A += g.inner_product(pi[mu], pi_prime[mu])
+            A += g.group.inner_product(pi[mu], pi_prime[mu]) * 0.5
         return A.real
 
     def draw(self, fields, rng):

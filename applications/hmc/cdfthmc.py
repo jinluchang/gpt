@@ -15,10 +15,10 @@ seed = g.default.get("--seed", "hmc-pure-gauge")
 n = g.default.get_int("--n", 1000)
 root = g.default.get("--root", None)
 rho = g.default.get_float("--rho", None)
-#tmasses = [float(x) for x in g.default.get("--t_masses", None).split(";")]
+# tmasses = [float(x) for x in g.default.get("--t_masses", None).split(";")]
 g.default.set_verbose("omf4")
 
-#grid = g.grid([32, 32, 32, 48], g.double)
+# grid = g.grid([32, 32, 32, 48], g.double)
 grid = g.grid([8, 8, 8, 8], g.double)
 rng = g.random(seed)
 
@@ -30,7 +30,6 @@ if g.rank() == 0:
 
 g.barrier()
 
-        
 
 fn_try = None
 i0 = 0
@@ -53,21 +52,30 @@ g.message("Actions:")
 even, odd = g.even_odd_projectors(U[0].grid)
 
 full = g(even + odd)
-none = g(0*full)
+none = g(0 * full)
+
+description = [
+    [(rho, g.path().f(nu).f(mu).b(nu, 2).b(mu).f(nu)) for nu in range(4) if mu != nu]
+    for mu in range(4)
+]
 
 pt_e = [
-    g.qcd.gauge.smear.parallel_transport(U, [
-        [(rho if mu < nu else -rho, g.path().f(nu).f(mu).b(nu,2).b(mu).f(nu)) for nu in range(4) if mu != nu]
-        for mu in range(4)
-    ], [even if i == j else full for i in range(4)], [odd if i == j else none for i in range(4)])
+    g.qcd.gauge.smear.parallel_transport(
+        U,
+        description,
+        [even if i == j else full for i in range(4)],
+        [odd if i == j else none for i in range(4)],
+    )
     for j in range(4)
 ]
 
 pt_o = [
-    g.qcd.gauge.smear.parallel_transport(U, [
-        [(rho if mu < nu else -rho, g.path().f(nu).f(mu).b(nu,2).b(mu).f(nu)) for nu in range(4) if mu != nu]
-        for mu in range(4)
-    ], [odd if i == j else full for i in range(4)], [even if i == j else none for i in range(4)])
+    g.qcd.gauge.smear.parallel_transport(
+        U,
+        description,
+        [odd if i == j else full for i in range(4)],
+        [even if i == j else none for i in range(4)],
+    )
     for j in range(4)
 ]
 
@@ -112,6 +120,7 @@ a1.assert_gradient_error(rng, U, U, 1e-4, 1e-7)
 def hamiltonian():
     return a0(p_mom) + a1(U)
 
+
 # molecular dynamics
 sympl = g.algorithms.integrator.symplectic
 
@@ -139,8 +148,9 @@ def hmc():
     h0 = hamiltonian()
     integrator(tau)
     h1 = hamiltonian()
-    return [True, h1-h0]
-    #return [accrej(h1, h0), h1 - h0]
+    return [True, h1 - h0]
+    # return [accrej(h1, h0), h1 - h0]
+
 
 # production
 for i in range(i0, n):
@@ -153,17 +163,19 @@ for i in range(i0, n):
 
     P = g.qcd.gauge.plaquette(Usm)
     g.message(f"Trajectory {i}, P={P} (integration {g.qcd.gauge.plaquette(U)}), dH={dH}")
-    for xx in [1,2,3,4]:
-        g.message(f"{xx} x 1 rectangle for physical field {g.qcd.gauge.rectangle(Usm, xx, 1)} versus integration variable {g.qcd.gauge.rectangle(U, xx, 1)}")
+    for xx in [1, 2, 3, 4]:
+        g.message(
+            f"{xx} x 1 rectangle for physical field {g.qcd.gauge.rectangle(Usm, xx, 1)} versus integration variable {g.qcd.gauge.rectangle(U, xx, 1)}"
+        )
 
     # polyakov
     PL = g.identity(Usm[3])
     for t in range(grid.gdimensions[3]):
         PL = g(Usm[3] * g.cshift(PL, 3, 1))
-    polyakov = g(g.trace(PL)/3)[:,:,:,0]
+    polyakov = g(g.trace(PL) / 3)[:, :, :, 0]
 
     if g.rank() == 0:
-        flog = open(f"{root}/ckpoint_lat.{i}.log","wt")
+        flog = open(f"{root}/ckpoint_lat.{i}.log", "wt")
         flog.write(f"dH {dH}\n")
         flog.write(f"P {P}\n")
         for p in polyakov:
@@ -184,4 +196,3 @@ for i in range(i0, n):
     g.barrier()
 
     g.save(f"{root}/ckpoint_lat.{i}", Usm, g.format.nersc())
-

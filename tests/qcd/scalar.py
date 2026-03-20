@@ -255,3 +255,25 @@ v1 = aP(U + U_mom)
 eps = abs(v0 - v1) / abs(v0)
 g.message(f"Draw consistency of kernel action: {eps}")
 assert eps < 1e-12
+
+rng.element(U_mom)
+aP = g.qcd.scalar.action.hermitian_kernel.mass_term(
+    g.qcd.scalar.action.hermitian_kernel.complement(
+        U,
+        g.qcd.scalar.action.stencil_transformation(
+            g.group.cartesian(U),
+            [(1.0, (0, 0, 0, 0)), (1 / 6, (1, 0, 0, 0)), (1 / 6, (-1, 0, 0, 0))],
+        ),
+        [odd] * 4,
+        [even] * 4,
+    ),
+    g.algorithms.inverter.block_cg({"eps": 1e-15, "maxiter": 300}),
+)
+
+aP.assert_gradient_error(rng, U + U_mom, U_mom, 1e-3, 1e-8)
+
+v0 = aP.draw(U + U_mom, rng)
+v1 = aP(U + U_mom)
+eps = abs(v0 - v1) / abs(v0)
+g.message(f"Draw consistency of kernel action: {eps}")
+assert eps < 1e-12
