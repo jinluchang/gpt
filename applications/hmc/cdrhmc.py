@@ -53,6 +53,8 @@ g.message("Actions:")
 # action for conj. momenta
 even, odd = g.even_odd_projectors(U[0].grid)
 
+g.message(tscale, tmasses)
+
 g.default.push_verbose("block_cg", True)
 a0 = g.qcd.scalar.action.hermitian_kernel.mass_term(
     g.qcd.scalar.action.hermitian_kernel.complement(
@@ -68,8 +70,9 @@ a0 = g.qcd.scalar.action.hermitian_kernel.mass_term(
 p_mom = g.group.cartesian(U)
 
 #g.message(f" - {a0.__name__}")
-a0.assert_gradient_error(rng, U + p_mom, U + p_mom, 1e-3, 1e-8)
 a0.draw(U + p_mom, rng)
+a0.assert_gradient_error(rng, U + p_mom, U + p_mom, 1e-3, 1e-8)
+
 
 # wilson action
 a1 = g.qcd.gauge.action.iwasaki(beta)

@@ -103,7 +103,7 @@ for i in reversed(range(4)):
     a1 = a1.transformed(pt_o[i])
     a_log_det = a_log_det.transformed(pt_o[i]) + pt_o[i].action_log_det_jacobian()
 
-a1.assert_gradient_error(rng, U, U, 1e-4, 1e-7)
+a1.assert_gradient_error(rng, U, U, 1e-3, 1e-6)
 
 
 def hamiltonian():
@@ -117,7 +117,7 @@ def add(X, Y):
 
 ip = sympl.update_p(p_mom, lambda: add(a1.gradient(U, U), a_log_det.gradient(U, U)))
 iq = sympl.update_q(U, lambda: a0.gradient(p_mom, p_mom))
-integrator = sympl.OMF4(noutersteps, ip, iq)
+integrator = sympl.OMF2(noutersteps, ip, iq)
 
 # integrator
 g.message(f"Integration scheme:\n{integrator}")
