@@ -18,6 +18,11 @@ implicit_eps = g.default.get_float("--eps", 1e-9)
 dist_coef = [float(x) for x in g.default.get("--dc", None).split(";")]
 g.default.set_verbose("omf4")
 
+nsave = 1
+if tau < 1.0:
+    nsave = int(np.round(1.0 / tau))
+    g.message("Save every", nsave," config")
+
 grid = g.grid([32, 32, 32, 48], g.double)
 #grid = g.grid([8, 8, 8, 8], g.double)
 rng = g.random(seed)
@@ -138,6 +143,9 @@ for i in range(i0, n):
     _, dH = hmc()
     P = g.qcd.gauge.plaquette(U)
     g.message(f"Trajectory {i}, P={P}, dH={dH}")
+
+    if i % nsave != 0:
+        continue
 
     # polyakov
     PL = g.identity(U[3])
