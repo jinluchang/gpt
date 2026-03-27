@@ -6,6 +6,11 @@ rad = g.ad.reverse
 
 U = g.load("cdrhmc_16_0.5625x3/ckpoint_lat.99")
 
+use_unit=False
+
+if use_unit:
+    U = g.qcd.gauge.unit(U[0].grid)
+
 action = g.qcd.gauge.action.differentiable_iwasaki(2.95)
 
 nnU = [rad.node(rad.node(u)) for u in U]
@@ -55,15 +60,38 @@ if False:
     evec, evals = irl(H, test_src)
     g.message(evals)
     evec_max_norm2 = g(g.trace(g.adj(evec[0]) * evec[0]))
-    np.savetxt("H_eval_max", evals)
-    np.savetxt("H_evec_max_2d", evec_max_norm2[:,:,0,0,0].real.reshape(8,8))
+    if not use_unit:
+        np.savetxt("H_eval_max", evals)
+        np.savetxt("H_evec_max_2d", evec_max_norm2[:,:,0,0,0].real.reshape(8,8))
 
-if True:
+if False:
     eval_max = 11.27393345529601
+    if use_unit:
+        eval_max = 15
     H_inv = g.matrix_operator(mat=lambda dst, src: g.eval(dst, eval_max*src - H*src))
     # upper edge of spectrum
     evec, evals = irl(H_inv, test_src)
     g.message(evals)
     evec_min_norm2 = g(g.trace(g.adj(evec[0]) * evec[0]))
-    np.savetxt("H_eval_min", eval_max - np.array(evals))
-    np.savetxt("H_evec_min_2d", evec_min_norm2[:,:,0,0,0].real.reshape(8,8))
+    if not use_unit:
+        np.savetxt("H_eval_min", eval_max - np.array(evals))
+        np.savetxt("H_evec_min_2d", evec_min_norm2[:,:,0,0,0].real.reshape(8,8))
+
+if True:
+    # test Hessian
+    dA = g.random("test").normal_element(g.group.cartesian(U))
+    eps = 1e-6
+    
+    a0 = action(U)
+    a1 = action([ g(g.group.compose(g(eps*dA[mu]), U[mu])) for mu in range(4) ])
+    F = g.qcd.gauge.action.iwasaki(2.95).gradient(U, U)
+    F_dA = sum(g.group.inner_product(F[mu], dA[mu]) for mu in range(4))
+    H_dA = Hessian_vec(dA)
+    dA_H_dA = sum(g.group.inner_product(dA[mu], H_dA[mu]) for mu in range(4))
+    print((a1 - a0) / eps)
+    print((a1 - a0 - eps * F_dA) / eps)
+    print((a1 - a0 - eps * F_dA - eps**2 * dA_H_dA) / eps)
+
+    # NOTE: test makes clear that H is defined only up to normalization factor 2
+    # of group generators that differs between the proper g.group.inner_product
+    # and the currently differentiable g.inner_product
