@@ -52,6 +52,9 @@ class container:
             if otype.__name__ == "ot_singlet":
                 self.tag = [complex]
 
+    def copy(self):
+        return container(*[x for x in self.tag])
+        
     def is_field(self):
         return self.tag[0] == g.lattice
 
@@ -120,6 +123,8 @@ class container:
 
 
 def get_container(x):
+    if isinstance(x, g.expr):
+        x = g(x)
     if isinstance(x, g.ad.reverse.node_base):
         return get_container(x.value)
     elif isinstance(x, g.ad.forward.series):

@@ -17,6 +17,7 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 import gpt as g
+import numpy as np
 from gpt.ad.reverse.util import container, get_unary_container, get_container
 import gpt.ad.reverse.foundation.matrix
 
@@ -116,6 +117,8 @@ def component_simple_map(operator, numpy_operator, extra_params, first, second):
 
 
 def infinitesimal_to_cartesian(src, dsrc):
+    if gpt.util.is_num(src.value) or isinstance(src.value, np.ndarray):
+        return dsrc
     return src.value.otype.infinitesimal_to_cartesian(src, dsrc)
 
 
@@ -145,7 +148,7 @@ def astype(x, y):
         if x.with_gradient:
             x.gradient += z.gradient
 
-    z_container = get_container(x.value)
+    z_container = x._container.copy()
     z_container.set_otype(y)
 
     return g.ad.reverse.node_base(
