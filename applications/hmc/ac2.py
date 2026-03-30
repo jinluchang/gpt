@@ -25,15 +25,21 @@ def ac(root, i0, i1, di, cdims):
                 mf["Q8"].append(g.qcd.gauge.topological_charge(U, field=True))
 
     # deal with PBC edge effect
+    zero = g.copy(mf["E4"][0])
+    zero[:] = 0
+
+    T0 = len(mf["E4"])
     for tg in mf:
-        l = list(reversed(mf[tg]))[1:-1]
-        mf[tg] = mf[tg] + l
+        # first subtract mean, then padd with zeros
+        mf_mean = sum(g.sum(x) for x in mf[tg]) / mf[tg][0].grid.fsites / len(mf[tg]) * g.identity(mf[tg][0])
+        for x in mf[tg]:
+            x -= mf_mean
+        mf[tg] = mf[tg] + [zero]*T0
+    correction = np.array([2*T0/(T0 - i) for i in range(T0)])
 
     T = len(mf["E4"])
     for x in mf:
         mf[x] = g.merge(mf[x])
-        mf_mean = g.sum(mf[x]) / mf[x].grid.fsites
-        mf[x] -= g.identity(mf[x])*mf_mean
         mf[x] = g.correlate(mf[x], mf[x], dims=[4])
         mf[x] = g.block.transfer(
             mf[x].grid, 
@@ -52,7 +58,7 @@ def ac(root, i0, i1, di, cdims):
     for i in range(0, np.prod(cdims), nblock):
         w = g.corr_io.writer(f"measures/{root}-ac2/{i//nblock}")
         for x in mf:
-            w.write(x, np.mean([ mf[x][:,i+j] for j in range(nblock) ], axis=0))
+            w.write(x, np.mean([ mf[x][:,i+j] for j in range(nblock) ], axis=0)[0:T0] * correction)
         w.close()
     return mf
 
