@@ -51,7 +51,7 @@ def ac(root, i0, i1, di, cdims):
         w.close()
     return mf
 
-def aca(root, i0, i1, di):
+def aca(root, i0, i1, di=1):
     # 2,4,4,3 -> 16,8,8,16 volume per node
     i1 -= (i1 - i0) % 4
     ac(root, i0, i1, di, [2,4,4,6])
