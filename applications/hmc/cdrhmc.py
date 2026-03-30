@@ -165,7 +165,7 @@ for i in range(i0, n):
     # and wilson flowed energy
     Uwf = U
     twf = 0.0
-    for _ in range(20):
+    for _ in range(80):
         Uwf = g.qcd.gauge.smear.wilson_flow(Uwf, epsilon=0.1)
         twf += 0.1
         E = g.qcd.gauge.energy_density(Uwf).real

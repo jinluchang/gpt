@@ -24,6 +24,12 @@ def ac(root, i0, i1, di, cdims):
                 mf["E8"].append(g.qcd.gauge.energy_density(U, field=True))
                 mf["Q8"].append(g.qcd.gauge.topological_charge(U, field=True))
 
+    # deal with PBC edge effect
+    for i in range(i0, i1, di):
+        for tg in mf:
+            l = list(reversed(mf[tg]))[1:-1]
+            mf[tg] = mf[tg] + l
+
     T = len(mf["E4"])
     for x in mf:
         mf[x] = g.merge(mf[x])
@@ -40,12 +46,12 @@ def ac(root, i0, i1, di, cdims):
 
 
     if g.rank() == 0:
-        if not os.path.exists(f"measures/{root}-ac"):
-            os.makedirs(f"measures/{root}-ac", exist_ok=True)
+        if not os.path.exists(f"measures/{root}-ac2"):
+            os.makedirs(f"measures/{root}-ac2", exist_ok=True)
     g.barrier()
     nblock = 3
     for i in range(0, np.prod(cdims), nblock):
-        w = g.corr_io.writer(f"measures/{root}-ac/{i//nblock}")
+        w = g.corr_io.writer(f"measures/{root}-ac2/{i//nblock}")
         for x in mf:
             w.write(x, np.mean([ mf[x][:,i+j] for j in range(nblock) ], axis=0))
         w.close()
@@ -56,17 +62,15 @@ def aca(root, i0, i1, di):
     i1 -= (i1 - i0) % 4
     ac(root, i0, i1, di, [2,4,4,6])
 
-#aca("hmc-tau16", 64, 125)
-#aca("hmc-tau8", 125, 250)
-#aca("hmc-tau4", 250, 500)
-#aca("hmc-tau2", 500, 1000)
-#aca("hmc", 1000, 2000)
-
-#aca("hmc-tau0p5", 2800, 4000, 2)
-
 aca("xfthmc-0.124-therm-tau2", 0, 148)
 aca("xfthmc-0.124-therm-tau4", 0, 112)
 aca("xfthmc-0.124-therm-tau8", 0, 40)
 
+aca("hmc-tau16", 64, 125)
+aca("hmc-tau8", 125, 250)
+aca("hmc-tau4", 250, 500)
+aca("hmc-tau2", 500, 1000)
+aca("hmc", 1000, 2000)
+aca("hmc-tau0p5", 2800, 4000, 2)
 
 g.barrier()
