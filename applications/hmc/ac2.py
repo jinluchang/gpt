@@ -25,10 +25,9 @@ def ac(root, i0, i1, di, cdims):
                 mf["Q8"].append(g.qcd.gauge.topological_charge(U, field=True))
 
     # deal with PBC edge effect
-    for i in range(i0, i1, di):
-        for tg in mf:
-            l = list(reversed(mf[tg]))[1:-1]
-            mf[tg] = mf[tg] + l
+    for tg in mf:
+        l = list(reversed(mf[tg]))[1:-1]
+        mf[tg] = mf[tg] + l
 
     T = len(mf["E4"])
     for x in mf:
