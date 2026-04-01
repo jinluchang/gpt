@@ -42,6 +42,24 @@ void cgpt_ferm_to_prop(Lattice<iSpinColourVector<vtype>>& ferm, cgpt_Lattice_bas
 
 }
 
+template<typename vtype>
+void cgpt_ferm_to_prop(Lattice<iColourVector<vtype>>& ferm, cgpt_Lattice_base* _prop, int s, int c, bool f2p) {
+  Lattice<iColourMatrix<vtype>> & prop = compatible<iColourMatrix<vtype>>(_prop)->l;
+
+  ASSERT(s == 0);
+  
+  if (f2p) {
+    for(int i = 0; i < Nc; i++) {
+      pokeColour(prop, peekColour(ferm,i), i, c);
+    }
+  } else {
+    for(int i = 0; i < Nc; i++) {
+      pokeColour(ferm, peekColour(prop, i,c),i);
+    }
+  }
+
+}
+
 template<typename T>
 void cgpt_ferm_to_prop(Lattice<T>& ferm, cgpt_Lattice_base* _prop, int s, int c, bool f2p) {
   ERR("not supported");

@@ -357,6 +357,18 @@ wilson_twisted_mass_matrices = {
     ".Mdiag": [-440.5312395819657 - 1102.362512575698j],
 }
 test_suite = {
+    # "staggered": {
+    #     "fermion": g.qcd.fermion.staggered,
+    #     "params" : {
+    #         "mass": 0.1,
+    #         "c1": 9.0/8.0,
+    #         "c2": -1.0/24.0,
+    #         "u0": 1.0
+    #     },
+    #     "matrices": {
+    #         "": None
+    #     }
+    # },
     "zmobius": {
         "fermion": g.qcd.fermion.zmobius,
         "params": {
@@ -844,7 +856,7 @@ for name in test_suite:
             dst[grid] = rng.cnormal(g.vspincolor(grid))
 
     # apply open boundaries to fields if necessary
-    if test["params"]["boundary_phases"][-1] == 0.0:
+    if "boundary_phases" in test["params"] and test["params"]["boundary_phases"][-1] == 0.0:
         for grid in src:
             g.qcd.fermion.apply_open_boundaries(src[grid])
             g.qcd.fermion.apply_open_boundaries(dst[grid])

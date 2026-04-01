@@ -114,6 +114,7 @@ class ot_vector_color(ot_base):
         self.spintrace = (None, None, None)
         self.colortrace = (None, None, None)
         self.colormerge = (0, lambda: ot_singlet())
+        self.ot_matrix = "ot_matrix_su_n_fundamental_group(%d)" % ndim
         self.mtab = {
             "ot_singlet": (lambda: self, None),
         }
@@ -133,6 +134,33 @@ class ot_vector_color(ot_base):
 
     def cartesian(self):
         return self
+
+    def distribute(self, mat, dst, src, zero_lhs):
+        src, dst = gpt.util.to_list(src), gpt.util.to_list(dst)
+        if src[0].otype.__name__ == self.ot_matrix:
+            assert dst[0].otype.__name__ == self.ot_matrix
+            src_grid = src[0].grid
+            dst_grid = dst[0].grid
+            n_src = self.shape[0] * len(src)
+            n_dst = self.shape[0] * len(dst)
+            dst_sc = [gpt.gpt_object(dst_grid, self) for i in range(n_dst)]
+            src_sc = [gpt.gpt_object(src_grid, self) for i in range(n_src)]
+
+            for i in range(len(src)):
+                for c in range(self.shape[0]):
+                    idx = c + self.shape[0] * i
+                    gpt.qcd.prop_to_ferm(src_sc[idx], src[i], 0, c)  # TODO: this may need attention
+                    if zero_lhs:
+                        gpt.qcd.prop_to_ferm(dst_sc[idx], dst[i], 0, c)
+
+            mat(dst_sc, src_sc)
+
+            for i in range(len(dst)):
+                for c in range(self.shape[0]):
+                    idx = c + self.shape[0] * i
+                    gpt.qcd.ferm_to_prop(dst[i], dst_sc[idx], 0, c)
+        else:
+            raise TypeError(f"Unexpected type {src[0].otype.__name__} <> {self.ot_matrix}")
 
 
 ###

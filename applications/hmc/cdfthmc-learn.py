@@ -45,7 +45,7 @@ def apply_smearing(U, rho_val, inverse):
 
     inv_pt_e = [x.inv() for x in pt_e]
     inv_pt_o = [x.inv() for x in pt_o]
-    
+
     # undo smearing
     if inverse:
         for i in reversed(range(4)):
@@ -57,6 +57,7 @@ def apply_smearing(U, rho_val, inverse):
             U = pt_e[i](U)
 
     return U
+
 
 # then learn
 rho_val = -0.3 + 0j
@@ -71,13 +72,9 @@ for epoch in range(20):
     # the initial inverse smearing
     nnU0 = [rad.node(rad.node(u, infinitesimal_to_cartesian=False)) for u in _U]
     rho = rad.node(rho_val)
-    g.qcd.gauge.action.differentiable_iwasaki(beta)(apply_smearing(
-        nnU0,
-        rad.node(rho),
-        False
-    ))()
-    c = sum(g.norm2(nnU0[mu].gradient) for mu in range(4))/4/full.grid.fsites/8/3
-    
+    g.qcd.gauge.action.differentiable_iwasaki(beta)(apply_smearing(nnU0, rad.node(rho), False))()
+    c = sum(g.norm2(nnU0[mu].gradient) for mu in range(4)) / 4 / full.grid.fsites / 8 / 3
+
     # then create a graph from physical field to integration variable as leaf
     nU = [rad.node(u) for u in U0]
     rho2 = rad.node(rho_val)
@@ -85,13 +82,14 @@ for epoch in range(20):
 
     cv = c()
     rho_gradients = [rho.gradient]
-    
+
     # there is also a gradient on the physical fields that needs to be propagated to the rho in the inverse smearing
     for mu in range(4):
         nU0[mu](initial_gradient=nnU0[mu].value.gradient)
         rho_gradients.append(rho2.gradient)
 
-    g.message(f"""
+    g.message(
+        f"""
 
     Epoch {epoch} has:
 
@@ -99,6 +97,15 @@ for epoch in range(20):
       Rho             {rho_val}
       Rho gradients   {rho_gradients}   ->   sum to  {sum(rho_gradients)}
 
-    """)
+    """
+    )
 
-    rho_val -= 2e-2*sum(rho_gradients)
+    rho_val -= 2e-2 * sum(rho_gradients)
+
+
+#
+# V = f^{-1}(U, rho)
+# S(f(V, rho)),    c = | \partial S(f(V)) / \partial V |^2
+#
+# dc/drho
+#
