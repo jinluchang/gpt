@@ -105,7 +105,7 @@ for epoch in range(20):
 
 #
 # V = f^{-1}(U, rho)
-# S(f(V, rho)),    c = | \partial S(f(V)) / \partial V |^2
+# S(f(V, rho)),    c = | \partial S(f(V, rho)) / \partial V |^2
 #
 # dc/drho
 #
