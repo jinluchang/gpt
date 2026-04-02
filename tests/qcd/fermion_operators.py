@@ -297,6 +297,18 @@ assert eps < 1e-6
 # test instantiation of other actions
 rhq = g.qcd.fermion.rhq_columbia(U, mass=4.0, cp=3.0, zeta=2.5, boundary_phases=[1, 1, 1, -1])
 
+# test staggered propagator (provide thin and fat links in combined first argument)
+stag = g.qcd.fermion.staggered(U + g.qcd.gauge.smear.stout(rho=0.1)(U), mass=0.1, c1=9.0/8.0, c2=-1.0/24.0, u0=1)
+prop = stag.propagator(inv.preconditioned(pc.eo2_ne(), cg))
+src = rng.cnormal(g.mcolor(grid))
+src /= g.norm2(src) ** 0.5
+dst = g(prop * src)
+fp = g.inner_product(dst, rng.cnormal(g.mcolor(grid)))
+eps = abs(fp - (0.12928982800662958+1.2386178136232147j))
+g.message(f"Staggered fingerprint test: {eps}")
+assert eps < 1e-5
+
+
 
 #########################################################################
 # Test fermion operators against known results
