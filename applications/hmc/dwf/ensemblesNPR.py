@@ -10,10 +10,10 @@ category = g.default.get("--category", None)
 
 ensembles_small = {
     "fine 3f 1-1" : {
-        "L" : [4]*4, "beta" :  2.41, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.5, "c" : 0.5, "M5" : 1.8, "nsteps" : 4, "nsubsteps" : 2, "tau" : 1, "nwf_max" : 1200
+        "L" : [32]*3 + [48], "beta" :  2.41, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200
     },
     "fine 3+1f 1-1" : {
-        "L" : [4]*4, "beta" : 2.39, "ml" :  0.0176, "ms" : 0.0176, "mc" : 0.187, "Ls" : 12, "b" : 1.5, "c" : 0.5, "M5" : 1.8, "nsteps" : 4, "nsubsteps" : 2, "tau" : 1, "nwf_max" : 1200
+        "L" : [32]*3 + [48], "beta" : 2.39, "ml" :  0.0176, "ms" : 0.0176, "mc" : 0.187, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200
     }
 }
 
