@@ -1088,7 +1088,7 @@ for conf in conf_range:
         ):
             g.message(f"Still to do: {fn}")
             tags.append(tag)
-    if len(tags) == len(ensembles):
+    if len(tags) >= len(ensembles):
         break
 
 g.message(f"Current tag priority: {tags}")
