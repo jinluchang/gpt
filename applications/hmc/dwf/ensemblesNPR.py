@@ -1124,9 +1124,9 @@ for tag in tags:
         job_verify = [job_reproduction_verify(job_dr)]
         jobs = jobs + job_dr + job_verify + [
             job_release(
-                [f"{tag}/{latest_conf}_checkpoint/{r}/config.0" for r in run_replicas]
-                + [f"{tag}/{latest_conf}_draw/{r}/state.0" for r in run_replicas[1:]]
-                + [f"{tag}/{latest_conf}_draw/{r}/state.draw" for r in run_replicas[1:]],
+                [f"{root_output}/{tag}/{latest_conf}_checkpoint/{r}/config.0" for r in run_replicas]
+                + [f"{root_output}/{tag}/{latest_conf}_draw/{r}/state.0" for r in run_replicas[1:]]
+                + [f"{root_output}/{tag}/{latest_conf}_draw/{r}/state.draw" for r in run_replicas[1:]],
                 job_verify[0]
             )
         ]
@@ -1149,16 +1149,16 @@ for tag in tags:
             if its == 0:
                 jobs = jobs + [
                     job_release(
-                        [f"{tag}/{latest_conf}_draw/0/state.0"]
-                        + [f"{tag}/{latest_conf}_md_{its}/{r}/state.0" for r in run_replicas[1:]],
+                        [f"{root_output}/{tag}/{latest_conf}_draw/0/state.0"]
+                        + [f"{root_output}/{tag}/{latest_conf}_md_{its}/{r}/state.0" for r in run_replicas[1:]],
                         job_verify[0]
                     )
                 ]
             else:
                 jobs = jobs + [
                     job_release(
-                        [f"{tag}/{latest_conf}_md_{its-1}/0/state.0"]
-                        + [f"{tag}/{latest_conf}_md_{its}/{r}/state.0" for r in run_replicas[1:]],
+                        [f"{root_output}/{tag}/{latest_conf}_md_{its-1}/0/state.0"]
+                        + [f"{root_output}/{tag}/{latest_conf}_md_{its}/{r}/state.0" for r in run_replicas[1:]],
                         job_verify[0]
                     )
                 ]
@@ -1171,9 +1171,9 @@ for tag in tags:
         # and release draw and last state
         jobs = jobs + [
             job_release([
-                f"{tag}/{latest_conf}_md_{nsteps-1}/{r}/state.0" for r in run_replicas
+                f"{root_output}/{tag}/{latest_conf}_md_{nsteps-1}/{r}/state.0" for r in run_replicas
             ] + [
-                f"{tag}/{latest_conf}_draw/0/state.draw"
+                f"{root_output}/{tag}/{latest_conf}_draw/0/state.draw"
             ], job_verify[0])
         ]
 
