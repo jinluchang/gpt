@@ -90,7 +90,8 @@ def setup():
             def abort():
                 os.write(sys.stdout.fileno(), f"{gpt.rank()} pid={parentid} ABORT\n".encode("utf-8"))
                 try:
-                    os.kill(parentid, signal.SIGKILL)
+                    # os.kill(parentid, signal.SIGKILL)
+                    os.kill(parentid, signal.SIGABRT)
 
                     # this is crude and should be improved!
                     os.system("killall python3")
