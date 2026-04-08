@@ -301,12 +301,12 @@ rhq = g.qcd.fermion.rhq_columbia(U, mass=4.0, cp=3.0, zeta=2.5, boundary_phases=
 stag = g.qcd.fermion.staggered(
     U + g.qcd.gauge.smear.stout(rho=0.1)(U), mass=0.1, c1=9.0 / 8.0, c2=-1.0 / 24.0, u0=1
 )
-prop = stag.propagator(inv.preconditioned(pc.eo2_ne(), cg))
+prop = stag.propagator(inv.preconditioned(pc.eo3(), cg)) # For staggered already eo3 is Hermitian!
 src = rng.cnormal(g.mcolor(grid))
 src /= g.norm2(src) ** 0.5
 dst = g(prop * src)
 fp = g.inner_product(dst, rng.cnormal(g.mcolor(grid)))
-eps = abs(fp - (0.12928982800662958 + 1.2386178136232147j))
+eps = abs(fp - (0.1265602889719839+1.2472178166078551j))
 g.message(f"Staggered fingerprint test: {eps}")
 assert eps < 1e-3
 eps = g.norm2(stag * dst - src) / g.norm2(src)
