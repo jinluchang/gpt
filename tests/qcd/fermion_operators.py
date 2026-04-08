@@ -298,15 +298,32 @@ assert eps < 1e-6
 rhq = g.qcd.fermion.rhq_columbia(U, mass=4.0, cp=3.0, zeta=2.5, boundary_phases=[1, 1, 1, -1])
 
 # test staggered propagator (provide thin and fat links in combined first argument)
-stag = g.qcd.fermion.staggered(U + g.qcd.gauge.smear.stout(rho=0.1)(U), mass=0.1, c1=9.0/8.0, c2=-1.0/24.0, u0=1)
+stag = g.qcd.fermion.staggered(
+    U + g.qcd.gauge.smear.stout(rho=0.1)(U), mass=0.1, c1=9.0 / 8.0, c2=-1.0 / 24.0, u0=1
+)
 prop = stag.propagator(inv.preconditioned(pc.eo2_ne(), cg))
 src = rng.cnormal(g.mcolor(grid))
 src /= g.norm2(src) ** 0.5
 dst = g(prop * src)
 fp = g.inner_product(dst, rng.cnormal(g.mcolor(grid)))
-eps = abs(fp - (0.12928982800662958+1.2386178136232147j))
+eps = abs(fp - (0.12928982800662958 + 1.2386178136232147j))
 g.message(f"Staggered fingerprint test: {eps}")
 assert eps < 1e-3
+eps = g.norm2(stag * dst - src) / g.norm2(src)
+g.message(f"Staggered inversion test: {eps}")
+assert eps < 1e-5
+
+# test of proper distribution
+for i in range(3):
+    distribute_test = g(stag * dst)
+    dst_c = g.vcolor(grid)
+    dst_c[:, :, :, :, :] = dst[:, :, :, :, :, 0]
+    distribute_test_c = g(stag * dst_c)
+    src_c = g.vcolor(grid)
+    src_c[:, :, :, :, :] = distribute_test[:, :, :, :, :, 0]
+    eps = g.norm2(src_c - distribute_test_c)
+    g.message(f"Staggered distribution test: {i} -> {eps}")
+    assert eps == 0.0
 
 
 #########################################################################
