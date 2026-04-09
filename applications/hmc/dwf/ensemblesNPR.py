@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 import gpt as g
 import numpy as np
-import os, sys, shutil, socket
+import os, sys, shutil, socket, time
 
 g.default.set_verbose("defect_correcting_convergence")
 g.default.set_verbose("cg_log_convergence")
 
 category = g.default.get("--category", None)
+select = g.default.get("--select", None)
 
 
 ensembles_S = {
@@ -81,6 +82,11 @@ ensembles = {
     "S" : ensembles_S,
     "L" : ensembles_L,
 }[category]
+
+if select is not None:
+    ensembles = {
+        select : ensembles[select]
+    }
 
 ####
 run_replicas = [0,1] # run with reproduction replica
@@ -1175,6 +1181,7 @@ for tag in tags:
                 latest_conf = conf
                 g.message(f"Allowed complete {conf}")
     if latest_conf is not None:
+        g.message(f"ADDING all jobs for {tag} - {latest_conf}; total length={len(jobs)}")
         # first load checkpoint into a state and cleanup non-unitary errors
         job_ckp = [job_checkpoint(tag, latest_conf, r, []) for r in run_replicas]
         job_verify = [job_reproduction_verify(job_ckp)]
@@ -1254,5 +1261,12 @@ for tag in tags:
 ################################################################################
 # Execute one job at a time ;  allow for nodefile shuffle outside
 ################################################################################
+for j in jobs:
+    g.message(f"Candidate {j.name}")
 for i in range(1):
-    g.jobs.next(root_output, jobs, max_weight=100.0, stale_seconds=3600 * 1.2)
+    for ii in range(10):
+        g.message("Attempt",ii)
+        j=g.jobs.next(root_output, jobs, max_weight=100.0, stale_seconds=3600 * 1.2)
+        if j is not None:
+            break
+        time.sleep(60)
