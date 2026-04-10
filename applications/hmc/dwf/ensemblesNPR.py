@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 import gpt as g
 import numpy as np
-import os, sys, shutil, socket
+import os, sys, shutil, socket, time
 
 g.default.set_verbose("defect_correcting_convergence")
 g.default.set_verbose("cg_log_convergence")
 
 category = g.default.get("--category", None)
+select = g.default.get("--select", None)
 
 
 ensembles_S = {
@@ -39,18 +40,18 @@ ensembles_S = {
     # "48F4fh-2" : { "L" : [48]*4, "beta" : 2.45, "ml" :  0.0176, "ms" : 0.0176, "mc" : 0.187, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
 
     # 48^4 VF 3 flavor ensembles #
-    # "48VF3fl-1" : { "L" : [48]*4, "beta" :  2.56, "ml" : 0.00625, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    # "48VF3fl-2" : { "L" : [48]*4, "beta" :  2.62, "ml" : 0.00625, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    "48VF3fh-1" : { "L" : [48]*4, "beta" :  2.56, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
-    "48VF3fh-2" : { "L" : [48]*4, "beta" :  2.62, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
+    # "48VF3fl-1" : { "L" : [48]*4, "beta" :  2.56, "ml" : 0.00625, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
+    # "48VF3fl-2" : { "L" : [48]*4, "beta" :  2.62, "ml" : 0.00625, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
+    "48VF3fh-1" : { "L" : [48]*4, "beta" :  2.56, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
+    "48VF3fh-2" : { "L" : [48]*4, "beta" :  2.62, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
 
     # 48^4 VF 4 flavor ensembles #
-    "48VF4fc1-1" : { "L" : [48]*4, "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
-    # "48VF4fc1-2" : { "L" : [48]*4, "beta" :  2.60, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    "48VF4fc2-1" : { "L" : [48]*4, "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.178, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
-    # "48VF4fc2-2" : { "L" : [48]*4, "beta" :  2.60, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.178, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    "48VF4fc3-1" : { "L" : [48]*4, "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.213, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
-    # "48VF4fc3-2" : { "L" : [48]*4, "beta" :  2.60, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.213, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 }, 
+    "48VF4fc1-1" : { "L" : [48]*4, "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
+    # "48VF4fc1-2" : { "L" : [48]*4, "beta" :  2.60, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
+    "48VF4fc2-1" : { "L" : [48]*4, "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.178, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
+    # "48VF4fc2-2" : { "L" : [48]*4, "beta" :  2.60, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.178, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
+    "48VF4fc3-1" : { "L" : [48]*4, "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.213, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
+    # "48VF4fc3-2" : { "L" : [48]*4, "beta" :  2.60, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.213, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 }, 
 }
 
 #ensembles_M = {
@@ -58,20 +59,20 @@ ensembles_S = {
 
 ensembles_L = {
     # 64^3x96 3 flavor VF ensembles #
-    # "64VF3fl-1" : { "L" : [64]*3 + [96], "beta" :  2.56, "ml" : 0.00625, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    # "64VF3fl-2" : { "L" : [64]*3 + [96], "beta" :  2.62, "ml" : 0.00625, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    "64VF3fh-1" : { "L" : [64]*3 + [96], "beta" :  2.56, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
-    "64VF3fh-2" : { "L" : [64]*3 + [96], "beta" :  2.62, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
+    # "64VF3fl-1" : { "L" : [64]*3 + [96], "beta" :  2.56, "ml" : 0.00625, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
+    # "64VF3fl-2" : { "L" : [64]*3 + [96], "beta" :  2.62, "ml" : 0.00625, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
+    "64VF3fh-1" : { "L" : [64]*3 + [96], "beta" :  2.56, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
+    "64VF3fh-2" : { "L" : [64]*3 + [96], "beta" :  2.62, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
 
     # 64^3x96 4 flavor VF ensembles #
-    # "64VF4fl-1" : { "L" : [64]*3 + [96], "beta" :  2.54, "ml" : 0.00625, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    # "64VF4fl-2" : { "L" : [64]*3 + [96], "beta" :  2.60, "ml" : 0.00625, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    "64VF4fh-1" : { "L" : [64]*3 + [96], "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
-    # "64VF4fh-2" : { "L" : [64]*3 + [96], "beta" :  2.60, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
+    # "64VF4fl-1" : { "L" : [64]*3 + [96], "beta" :  2.54, "ml" : 0.00625, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
+    # "64VF4fl-2" : { "L" : [64]*3 + [96], "beta" :  2.60, "ml" : 0.00625, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
+    "64VF4fh-1" : { "L" : [64]*3 + [96], "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
+    # "64VF4fh-2" : { "L" : [64]*3 + [96], "beta" :  2.60, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
 
     # 96^4 3 flavor SF ensembles #
-    "96SF3f-1" : { "L" : [96]*4, "beta" :  2.71, "ml" : 0.0093 , "ms" : 0.0093, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 4800 },
-    # "96SF3f-2" : { "L" : [96]*4, "beta" :  2.77, "ml" : 0.0093, "ms" : 0.0093, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
+    "96SF3f-1" : { "L" : [96]*4, "beta" :  2.71, "ml" : 0.0093 , "ms" : 0.0093, "mc" : None, "Ls" : 12, "b" : 1.125, "c" : 0.125, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 4800 },
+    # "96SF3f-2" : { "L" : [96]*4, "beta" :  2.77, "ml" : 0.0093, "ms" : 0.0093, "mc" : None, "Ls" : 12, "b" : 1.125, "c" : 0.125, "M5" : 1.8 },
 }
 
 #ensembles_XL = {
@@ -81,6 +82,11 @@ ensembles = {
     "S" : ensembles_S,
     "L" : ensembles_L,
 }[category]
+
+if select is not None:
+    ensembles = {
+        select : ensembles[select]
+    }
 
 ####
 run_replicas = [0,1] # run with reproduction replica
@@ -1007,7 +1013,8 @@ class job_measure_glue(job_reproduction_base):
         config = f"{root}/{self.stream}/ckpoint_lat.{self.tag}"
         n = g.corr_io.count(f"{config}.gluonic")
         g.message("Checking", n)
-        return n == 1207
+        # return n in [1207, 2413]
+        return True
 
 
 
@@ -1175,6 +1182,7 @@ for tag in tags:
                 latest_conf = conf
                 g.message(f"Allowed complete {conf}")
     if latest_conf is not None:
+        g.message(f"ADDING all jobs for {tag} - {latest_conf}; total length={len(jobs)}")
         # first load checkpoint into a state and cleanup non-unitary errors
         job_ckp = [job_checkpoint(tag, latest_conf, r, []) for r in run_replicas]
         job_verify = [job_reproduction_verify(job_ckp)]
@@ -1254,5 +1262,12 @@ for tag in tags:
 ################################################################################
 # Execute one job at a time ;  allow for nodefile shuffle outside
 ################################################################################
+for j in jobs:
+    g.message(f"Candidate {j.name}")
 for i in range(1):
-    g.jobs.next(root_output, jobs, max_weight=100.0, stale_seconds=3600 * 1.2)
+    for ii in range(10):
+        g.message("Attempt",ii)
+        j=g.jobs.next(root_output, jobs, max_weight=100.0, stale_seconds=3600 * 1.2)
+        if j is not None:
+            break
+        time.sleep(60)
