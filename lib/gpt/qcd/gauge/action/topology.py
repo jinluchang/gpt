@@ -1,6 +1,6 @@
 #
 #    GPT - Grid Python Toolkit
-#    Copyright (C) 2020  Christoph Lehner (christoph.lehner@ur.de, https://github.com/lehner/gpt)
+#    Copyright (C) 2025  Christoph Lehner (christoph.lehner@ur.de, https://github.com/lehner/gpt)
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,15 +16,21 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-from gpt.qcd.gauge.action.base import base
-from gpt.qcd.gauge.action.wilson import wilson
-from gpt.qcd.gauge.action.improved_with_rectangle import (
-    improved_with_rectangle,
-    iwasaki,
-    dbw2,
-    symanzik,
-    differentiable_improved_with_rectangle,
-    differentiable_iwasaki,
-)
-import gpt.qcd.gauge.action.non_compact
-from gpt.qcd.gauge.action.topology import topology
+import gpt as g
+import numpy as np
+
+
+def topology(U, Q_mean, Q_std, sin2_Pi_Q_poly_coefficients=[]):
+    adU = [g.ad.reverse.node(g.copy(u)) for u in U]
+    dQ = g.qcd.gauge.differentiable_topology(adU)
+    dSinPiQ = g.component.sin(np.pi * dQ)
+    dSin2PiQ = dSinPiQ * dSinPiQ
+
+    dA = (dQ - Q_mean) * (dQ - Q_mean) * (1.0 / 2.0 / Q_std / Q_std)
+
+    poly_fac = dSin2PiQ
+    for c in sin2_Pi_Q_poly_coefficients:
+        dA = dA - c * poly_fac
+        poly_fac = poly_fac * dSin2PiQ
+
+    return dA.functional(*adU)

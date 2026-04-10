@@ -34,6 +34,10 @@ for prec in [g.double]:
     # relu without leakage
     relu = g.component.relu()
 
+    # trig
+    sin = g.component.sin
+    cos = g.component.cos
+
     def real(x):
         return 0.5 * (x + g.adj(x))
 
@@ -56,7 +60,7 @@ for prec in [g.double]:
             [b1, b2, a1, a2, t1, x],
         ),
         (
-            g.norm2(relu(a2 * relu(a1 * x + b1) + g.adj(t1 * x + b2)) - x),
+            g.norm2(relu(a2 * relu(a1 * x + b1) + g.adj(t1 * x + b2)) - x * cos(s1) * sin(s2)),
             1e-1,
             [b1, b2, a1, a2, t1, x],
         ),

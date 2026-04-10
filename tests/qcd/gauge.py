@@ -235,6 +235,13 @@ for action, ips_ref in [
     # estimate_photon_prop(action, 640, 1/512)
 
 
+# test topology action
+sm = g.qcd.gauge.smear.stout(rho=0.136)
+action_top = g.qcd.gauge.action.topology(U, 2, 0.5, [1.5, 2.3, 1.2])
+action_top = action_top.transformed(sm)
+action_top.assert_gradient_error(rng, U, U, 1e-3, 1e-7)
+
+
 # Test compact gauge actions
 for action in [g.qcd.gauge.action.wilson(5.43), g.qcd.gauge.action.iwasaki(5.41)]:
     # test action double precision versus quadruple precision
@@ -248,7 +255,6 @@ for action in [g.qcd.gauge.action.wilson(5.43), g.qcd.gauge.action.iwasaki(5.41)
     action.assert_gradient_error(rng, U, U, 1e-3, 1e-8)
 
     # test stout smearing chain rule
-    sm = g.qcd.gauge.smear.stout(rho=0.136)
     action_sm = action.transformed(sm)
     action_sm.assert_gradient_error(rng, U, U, 1e-3, 1e-7)
 

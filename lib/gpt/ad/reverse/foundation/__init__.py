@@ -113,6 +113,12 @@ def component_simple_map(operator, numpy_operator, extra_params, first, second):
     if operator == "relu":
         assert second is None
         return g.ad.reverse.transform.relu(first, a=extra_params["a"])
+    elif operator == "sin":
+        assert second is None
+        return g.ad.reverse.transform.sin(first)
+    elif operator == "cos":
+        assert second is None
+        return g.ad.reverse.transform.cos(first)
     raise Exception(f"component-wise operator {operator} not implemented in rev-AD")
 
 
