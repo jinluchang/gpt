@@ -69,18 +69,18 @@ ensembles_L = {
     # "64VF4fl-2" : { "L" : [64]*3 + [96], "beta" :  2.60, "ml" : 0.00625, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
     "64VF4fh-1" : { "L" : [64]*3 + [96], "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400 },
     # "64VF4fh-2" : { "L" : [64]*3 + [96], "beta" :  2.60, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
+}
 
+ensembles_XL = {
     # 96^4 3 flavor SF ensembles #
     "96SF3f-1" : { "L" : [96]*4, "beta" :  2.71, "ml" : 0.0093 , "ms" : 0.0093, "mc" : None, "Ls" : 12, "b" : 1.125, "c" : 0.125, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 4800 },
     # "96SF3f-2" : { "L" : [96]*4, "beta" :  2.77, "ml" : 0.0093, "ms" : 0.0093, "mc" : None, "Ls" : 12, "b" : 1.125, "c" : 0.125, "M5" : 1.8 },
 }
 
-#ensembles_XL = {
-#}
-
 ensembles = {
     "S" : ensembles_S,
     "L" : ensembles_L,
+    "XL" : ensembles_XL
 }[category]
 
 if select is not None:
