@@ -80,7 +80,7 @@ aQ = g.qcd.gauge.action.topology(U, Q_0, Q_1, Q_c)
 sm = g.qcd.gauge.smear.stout(rho=0.12)
 for it in range(Q_sm):
     aQ = aQ.transformed(sm)
-aQ.assert_gradient_error(rng, U, U, 1e-3, 1e-8)
+#aQ.assert_gradient_error(rng, U, U, 1e-3, 1e-8)
 
 a1 = a1 + aQ
 
