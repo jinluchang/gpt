@@ -12,12 +12,12 @@ select = g.default.get("--select", None)
 
 ensembles_S = {
     # 32 cubed 3 flavor Fine ensembles #  
-    "32F3fl-1" : { "L" : [32]*3 + [48], "beta" :  2.41, "ml" : 0.0088, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200 },
+    "32F3fl-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0088, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200 },
     # "32F3fl-2" : { "L" : [32]*3 + [48], "beta" :  2.47, "ml" : 0.0088, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
     "32F3fh-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200 },
     "32F3fh-1" : { "L" : [32]*3 + [48], "beta" :  2.41, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200 },
     "32F3fh-2" : { "L" : [32]*3 + [48], "beta" :  2.47, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200 },
-    "32F3fx-1" : { "L" : [32]*3 + [48], "beta" :  2.41, "ml" : 0.0176, "ms" : 0.0352, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200 },
+    "32F3fx-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0176, "ms" : 0.0352, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200 },
     # added this one to also get ms dependence
 
     # 32 cubed 4 flavor Fine ensembles #
