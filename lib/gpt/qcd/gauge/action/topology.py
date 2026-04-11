@@ -29,7 +29,7 @@ def topology(U, Q_mean, Q_std, sin2_Pi_Q_poly_coefficients=[]):
         if abs(c) < 1e-50:
             continue
 
-        dSinPiQ = g.component.sin((np.pi * n) * dQ)
+        dSinPiQ = g.component.sin((np.pi * (n + 1)) * dQ)
         dSin2PiQ = dSinPiQ * dSinPiQ
 
         dA = dA - c * dSin2PiQ
