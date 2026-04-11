@@ -23,14 +23,15 @@ import numpy as np
 def topology(U, Q_mean, Q_std, sin2_Pi_Q_poly_coefficients=[]):
     adU = [g.ad.reverse.node(g.copy(u)) for u in U]
     dQ = g.qcd.gauge.differentiable_topology(adU)
-    dSinPiQ = g.component.sin(np.pi * dQ)
-    dSin2PiQ = dSinPiQ * dSinPiQ
-
     dA = (dQ - Q_mean) * (dQ - Q_mean) * (1.0 / 2.0 / Q_std / Q_std)
 
-    poly_fac = dSin2PiQ
-    for c in sin2_Pi_Q_poly_coefficients:
-        dA = dA - c * poly_fac
-        poly_fac = poly_fac * dSin2PiQ
+    for n, c in enumerate(sin2_Pi_Q_poly_coefficients):
+        if abs(c) < 1e-50:
+            continue
+
+        dSinPiQ = g.component.sin((np.pi * n) * dQ)
+        dSin2PiQ = dSinPiQ * dSinPiQ
+
+        dA = dA - c * dSin2PiQ
 
     return dA.functional(*adU)
