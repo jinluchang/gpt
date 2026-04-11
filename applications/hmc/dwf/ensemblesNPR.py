@@ -234,23 +234,30 @@ def setup(tag):
     b = params["b"]
     c = params["c"]
 
-    fields = [
-        (U + [g.vspincolor(F_grid_eo)]),
-        (U + [g.vspincolor(F_grid_eo)]),
-        (U + [g.vspincolor(F_grid_eo)]),
+    fields = []
+    hasenbusch_ratios = []
+
+    hb_l = [1.0, 0.65, 0.28, 0.11, 0.017, 0.004, 0.0019]
+    hb_l = [x for x in hb_l if x > m_l]
+
+    for i in range(len(hb_l) - 1):
+        fields.append((U + [g.vspincolor(F_grid_eo)]))
+        hasenbusch_ratios.append((hb_l[i+1], hb_l[i], None, two_flavor_ratio, mk_chron(cg_e, *css[0]), mk_chron(cg_s, *css[0]), light))
+
+    hasenbusch_ratios.append((m_l, hb_l[-1], None, two_flavor_ratio, mk_chron(cg_e, *css[1]), mk_chron(cg_s_light, *css[1]), light))
+        
+    fields = fields + [
         (U + [g.vspincolor(F_grid_eo)]),
         (U + [g.vspincolor(U[0].grid)]),
         (U + [g.vspincolor(U[0].grid)]),
     ]
-    
-    hasenbusch_ratios = [
-        (0.65, 1.0, None, two_flavor_ratio, mk_chron(cg_e, *css[0]), mk_chron(cg_s, *css[0]), light),
-        (0.28, 0.65, None, two_flavor_ratio, mk_chron(cg_e, *css[0]), mk_chron(cg_s, *css[0]), light),
-        (0.11, 0.28, None, two_flavor_ratio, mk_chron(cg_e, *css[0]), mk_chron(cg_s, *css[0]), light),
-        (m_l, 0.11, None, two_flavor_ratio, mk_chron(cg_e, *css[1]), mk_chron(cg_s_light, *css[1]), light),
+
+    hasenbusch_ratios = hasenbusch_ratios + [
         (0.23, 1.0, rat_fnc, eofa_ratio, mk_slv_e(*css[2]), mk_slv_s(*css[2]), light),
         (m_s, 0.23, rat_fnc, eofa_ratio, mk_slv_e(*css[2]), mk_slv_s(*css[2]), light),
     ]
+
+    g.message(hasenbusch_ratios)
 
     if m_c is not None:
         css.append(
@@ -1089,8 +1096,8 @@ class job_measure_Q(job_reproduction_base):
 
         res = []
         for flow_tag, flow in [
-                ("wilson_iwasaki_dbw2", wilson_iwasaki_dbw2_flow),
-                ("dbw2_iwasaki_wilson", dbw2_iwasaki_wilson_flow),
+                # ("wilson_iwasaki_dbw2", wilson_iwasaki_dbw2_flow),
+                # ("dbw2_iwasaki_wilson", dbw2_iwasaki_wilson_flow),
                 ("dbw2", dbw2_flow),
                 ("iwasaki", iwasaki_flow),
         ]:
