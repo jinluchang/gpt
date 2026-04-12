@@ -35,3 +35,13 @@ def topology(U, Q_mean, Q_std, sin2_Pi_Q_poly_coefficients=[]):
         dA = dA - c * dSin2PiQ
 
     return dA.functional(*adU)
+
+
+def topology_field(U, Q_std):
+    adU = [g.ad.reverse.node(g.copy(u)) for u in U]
+    adQf = g.ad.reverse.node(g.real(U[0].grid))
+    
+    dQ = g.qcd.gauge.differentiable_topology(adU, field=True)
+    dA = g.norm2(g.astype(dQ, adQf.value.otype) - adQf) * (1.0 / 2.0 / Q_std / Q_std)
+
+    return dA.functional(*adU, adQf)
