@@ -9,14 +9,14 @@ g.default.set_verbose("cg_log_convergence")
 category = g.default.get("--category", None)
 select = g.default.get("--select", None)
 
-Q_therm = (0, 0.25, 8)
+Q_therm = (0, 0.25*4, 8)
 
 ensembles_S = {
     # 32 cubed 3 flavor Fine ensembles #  
     "32F3fl-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0088, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm },
     # "32F3fl-2" : { "L" : [32]*3 + [48], "beta" :  2.47, "ml" : 0.0088, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
     "32F3fh-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm },
-    "32F3fh-Q15-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : (15, 0.25, 8) },
+    "32F3fh-Q15-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : (15, 0.25*4, 8) },
     "32F3fh-1" : { "L" : [32]*3 + [48], "beta" :  2.41, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm },
     "32F3fh-2" : { "L" : [32]*3 + [48], "beta" :  2.47, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm },
     "32F3fx-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0176, "ms" : 0.0352, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm },
@@ -224,9 +224,9 @@ def setup(tag):
     Q = params["Q"]
     if Q is not None:
         aQ = g.qcd.gauge.action.topology(U, Q[0], Q[1])
-        sm = g.qcd.gauge.smear.stout(rho=0.12)
+        sm0 = g.qcd.gauge.smear.stout(rho=0.12)
         for it in range(Q[2]):
-            aQ = aQ.transformed(sm)
+            aQ = aQ.transformed(sm0)
         action_gauge = action_gauge + aQ
 
 
