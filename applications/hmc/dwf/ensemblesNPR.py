@@ -9,52 +9,53 @@ g.default.set_verbose("cg_log_convergence")
 category = g.default.get("--category", None)
 select = g.default.get("--select", None)
 
-Q_therm = (0, 0.25*4, 8)
+Q_therm_F = (0, 0.25/2, 8)
+Q_therm_VF = (0, 0.25/4, 8)
+Q_therm_SF = (0, 0.25/4, 12)
 
 ensembles_S = {
     # 32 cubed 3 flavor Fine ensembles #  
-    "32F3fl-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0088, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm },
-    # "32F3fl-2" : { "L" : [32]*3 + [48], "beta" :  2.47, "ml" : 0.0088, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    "32F3fh-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm },
-    "32F3fh-Q15-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : (15, 0.25*4, 8) },
-    "32F3fh-1" : { "L" : [32]*3 + [48], "beta" :  2.41, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm },
-    "32F3fh-2" : { "L" : [32]*3 + [48], "beta" :  2.47, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm },
-    "32F3fx-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0176, "ms" : 0.0352, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm },
+    "32F3fl-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0088, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25,
+                   "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm_F, "fermionic_from" : 100 },
+    "32F3fh-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25,
+                   "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm_F, "fermionic_from" : 100 },
+    "32F3fh-Q15-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25,
+                       "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : (15, 0.05, 8), "fermionic_from" : 28 },
+    "32F3fh-1" : { "L" : [32]*3 + [48], "beta" :  2.41, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25,
+                   "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm_F, "fermionic_from" : 100 },
+    "32F3fh-2" : { "L" : [32]*3 + [48], "beta" :  2.47, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25,
+                   "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm_F, "fermionic_from" : 100 },
+    "32F3fx-0" : { "L" : [32]*3 + [48], "beta" :  2.44, "ml" : 0.0176, "ms" : 0.0352, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25,
+                   "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm_F, "fermionic_from" : 100 },
     # added this one to also get ms dependence
 
     # 32 cubed 4 flavor Fine ensembles #
-    "32F4fc1-1" : { "L" : [32]*3 + [48], "beta" : 2.39, "ml" :  0.0176, "ms" : 0.0176, "mc" : 0.187, "Ls": 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm },
-    # "32F4fc1-2" : { "L" : [32]*3 + [48], "beta" : 2.45, "ml" :  0.0176, "ms" : 0.0176, "mc" : 0.187, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    # "32F4fc2-1" : { "L" : [32]*3 + [48], "beta" : 2.39, "ml" :  0.0176, "ms" : 0.0176, "mc" : 0.234, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    # "32F4fc2-2" : { "L" : [32]*3 + [48], "beta" : 2.45, "ml" :  0.0176, "ms" : 0.0176, "mc" : 0.234, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    # "32F4fc3-1" : { "L" : [32]*3 + [48], "beta" : 2.39, "ml" :  0.0176, "ms" : 0.0176, "mc" : 0.281, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    # "32F4fc3-2" : { "L" : [32]*3 + [48], "beta" : 2.45, "ml" :  0.0176, "ms" : 0.0176, "mc" : 0.281, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
+    "32F4fc1-1" : { "L" : [32]*3 + [48], "beta" : 2.39, "ml" :  0.0176, "ms" : 0.0176, "mc" : 0.187, "Ls": 12, "b" : 1.25, "c" : 0.25,
+                    "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm_F, "fermionic_from" : 100 },
 
     # 48^4 3 flavor Fine ensembles #
-    # "48F3fl-1" : { "L" : [48]*4, "beta" :  2.41, "ml" : 0.0088, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    # "48F3fl-2" : { "L" : [48]*4, "beta" :  2.47, "ml" : 0.0088, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    "48F3fh-1" : { "L" : [48]*4, "beta" :  2.41, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm },
-    "48F3fh-2" : { "L" : [48]*4, "beta" :  2.47, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm },
+    "48F3fh-1" : { "L" : [48]*4, "beta" :  2.41, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25,
+                   "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm_F, "fermionic_from" : 100 },
+    "48F3fh-2" : { "L" : [48]*4, "beta" :  2.47, "ml" : 0.0176, "ms" : 0.0176, "mc" : None, "Ls" : 12, "b" : 1.25, "c" : 0.25,
+                   "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm_F, "fermionic_from" : 100 },
 
     # 48^4 4 flavor Fine ensembles #
-    # "48F4fl-1" : { "L" : [48]*4, "beta" : 2.39, "ml" :  0.0088, "ms" : 0.0176, "mc" : 0.187, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    # "48F4fl-2" : { "L" : [48]*4, "beta" : 2.45, "ml" :  0.0088, "ms" : 0.0176, "mc" : 0.187, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
-    "48F4fh-1" : { "L" : [48]*4, "beta" : 2.39, "ml" :  0.0176, "ms" : 0.0176, "mc" : 0.187, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm },
-    # "48F4fh-2" : { "L" : [48]*4, "beta" : 2.45, "ml" :  0.0176, "ms" : 0.0176, "mc" : 0.187, "Ls" : 12, "b" : 1.25, "c" : 0.25, "M5" : 1.8 },
+    "48F4fh-1" : { "L" : [48]*4, "beta" : 2.39, "ml" :  0.0176, "ms" : 0.0176, "mc" : 0.187, "Ls" : 12, "b" : 1.25, "c" : 0.25,
+                   "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 1200, "Q" : Q_therm_F, "fermionic_from" : 100 },
 
     # 48^4 VF 3 flavor ensembles #
-    # "48VF3fl-1" : { "L" : [48]*4, "beta" :  2.56, "ml" : 0.00625, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
-    # "48VF3fl-2" : { "L" : [48]*4, "beta" :  2.62, "ml" : 0.00625, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
-    "48VF3fh-1" : { "L" : [48]*4, "beta" :  2.56, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm },
-    "48VF3fh-2" : { "L" : [48]*4, "beta" :  2.62, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm },
+    "48VF3fh-1" : { "L" : [48]*4, "beta" :  2.56, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175,
+                    "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm_VF, "fermionic_from" : 100 },
+    "48VF3fh-2" : { "L" : [48]*4, "beta" :  2.62, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175,
+                    "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm_VF, "fermionic_from" : 100 },
 
     # 48^4 VF 4 flavor ensembles #
-    "48VF4fc1-1" : { "L" : [48]*4, "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm },
-    # "48VF4fc1-2" : { "L" : [48]*4, "beta" :  2.60, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
-    "48VF4fc2-1" : { "L" : [48]*4, "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.178, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm },
-    # "48VF4fc2-2" : { "L" : [48]*4, "beta" :  2.60, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.178, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
-    "48VF4fc3-1" : { "L" : [48]*4, "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.213, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm },
-    # "48VF4fc3-2" : { "L" : [48]*4, "beta" :  2.60, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.213, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 }, 
+    "48VF4fc1-1" : { "L" : [48]*4, "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175,
+                     "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm_VF, "fermionic_from" : 100 },
+    "48VF4fc2-1" : { "L" : [48]*4, "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.178, "Ls" : 12, "b" : 1.175, "c" : 0.175,
+                     "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm_VF, "fermionic_from" : 100 },
+    "48VF4fc3-1" : { "L" : [48]*4, "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.213, "Ls" : 12, "b" : 1.175, "c" : 0.175,
+                     "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm_VF, "fermionic_from" : 100 },
 }
 
 #ensembles_M = {
@@ -62,22 +63,20 @@ ensembles_S = {
 
 ensembles_L = {
     # 64^3x96 3 flavor VF ensembles #
-    # "64VF3fl-1" : { "L" : [64]*3 + [96], "beta" :  2.56, "ml" : 0.00625, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
-    # "64VF3fl-2" : { "L" : [64]*3 + [96], "beta" :  2.62, "ml" : 0.00625, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
-    "64VF3fh-1" : { "L" : [64]*3 + [96], "beta" :  2.56, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm },
-    "64VF3fh-2" : { "L" : [64]*3 + [96], "beta" :  2.62, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm },
+    "64VF3fh-1" : { "L" : [64]*3 + [96], "beta" :  2.56, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175,
+                    "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm_VF, "fermionic_from" : 100 },
+    "64VF3fh-2" : { "L" : [64]*3 + [96], "beta" :  2.62, "ml" : 0.0125, "ms" : 0.0125, "mc" : None, "Ls" : 12, "b" : 1.175, "c" : 0.175,
+                    "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm_VF, "fermionic_from" : 100 },
 
     # 64^3x96 4 flavor VF ensembles #
-    # "64VF4fl-1" : { "L" : [64]*3 + [96], "beta" :  2.54, "ml" : 0.00625, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
-    # "64VF4fl-2" : { "L" : [64]*3 + [96], "beta" :  2.60, "ml" : 0.00625, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
-    "64VF4fh-1" : { "L" : [64]*3 + [96], "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm },
-    # "64VF4fh-2" : { "L" : [64]*3 + [96], "beta" :  2.60, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175, "M5" : 1.8 },
+    "64VF4fh-1" : { "L" : [64]*3 + [96], "beta" :  2.54, "ml" : 0.0125, "ms" : 0.0125, "mc" : 0.142, "Ls" : 12, "b" : 1.175, "c" : 0.175,
+                    "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 2400, "Q" : Q_therm_VF, "fermionic_from" : 100 },
 }
 
 ensembles_XL = {
     # 96^4 3 flavor SF ensembles #
-    "96SF3f-1" : { "L" : [96]*4, "beta" :  2.71, "ml" : 0.0093 , "ms" : 0.0093, "mc" : None, "Ls" : 12, "b" : 1.125, "c" : 0.125, "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 4800, "Q" : Q_therm },
-    # "96SF3f-2" : { "L" : [96]*4, "beta" :  2.77, "ml" : 0.0093, "ms" : 0.0093, "mc" : None, "Ls" : 12, "b" : 1.125, "c" : 0.125, "M5" : 1.8 },
+    "96SF3f-1" : { "L" : [96]*4, "beta" :  2.71, "ml" : 0.0093 , "ms" : 0.0093, "mc" : None, "Ls" : 12, "b" : 1.125, "c" : 0.125,
+                   "M5" : 1.8, "nsteps" : 8, "nsubsteps" : 4, "tau" : 8, "nwf_max" : 4800, "Q" : Q_therm_SF, "fermionic_from" : 100 },
 }
 
 ensembles = {
@@ -947,6 +946,55 @@ class job_measure_glue(job_reproduction_base):
             config = config + "." + str(self.replica)
 
         res = []
+        
+        # fermionic
+        if ensembles[self.stream]["fermionic_from"] <= self.conf:
+            ms = ensembles[self.stream]["ms"]
+            mc = ensembles[self.stream]["mc"]
+            w = g.corr_io.writer(f"{config}.fermionic")
+            slv = inv.defect_correcting(
+                inv.mixed_precision(inv.preconditioned(pc.eo2_ne(), cg_e_inner), g.single, g.double),
+                eps=exact_prec,
+                maxiter=100,
+            )
+            S = light(U, ms, ms, ensembles[self.stream])
+            if mc is not None:
+                C = light(U, mc, mc, ensembles[self.stream])
+            src = g.mspincolor(U[0].grid)
+            rng = g.random(f"strange.{self.stream}.{self.conf}")
+            for t0 in range(0, U[0].grid.gdimensions[3], U[0].grid.gdimensions[3]//4):
+                g.create.wall.z2(src, t0, rng)
+                prop_5d_s = g(S.bulk_propagator(slv) * src)
+                prop_s = g(S.bulk_propagator_to_propagator * prop_5d_s)
+                corr = g.slice(g.trace(g.adj(prop_s) * prop_s), 3)
+                corr = corr[t0:] + corr[:t0]
+                w.write(f"ss.G5G5.{t0}", corr)
+                res.append(corr)
+
+                p = S.J5q(prop_5d_s)
+                J5q = g.slice(g.trace(p * g.adj(p)), 3)
+                corr = corr[t0:] + corr[:t0]
+                w.write(f"mres.ss.G5G5.{t0}", corr)
+                res.append(corr)
+
+                if mc is not None:
+                    prop_5d_c = g(C.bulk_propagator(slv) * src)
+                    prop_c = g(C.bulk_propagator_to_propagator * prop_5d_c)
+                    corr = g.slice(g.trace(g.adj(prop_c) * prop_c), 3)
+                    corr = corr[t0:] + corr[:t0]
+                    w.write(f"cc.G5G5.{t0}", corr)
+                    res.append(corr)
+
+                    p = S.J5q(prop_5d_c)
+                    J5q = g.slice(g.trace(p * g.adj(p)), 3)
+                    corr = corr[t0:] + corr[:t0]
+                    w.write(f"mres.cc.G5G5.{t0}", corr)
+                    res.append(corr)
+
+                    corr = g.slice(g.trace(g.adj(prop_c) * prop_s), 3)
+                    corr = corr[t0:] + corr[:t0]
+                    w.write(f"cs.G5G5.{t0}", corr)
+                    res.append(corr)
         
         w = g.corr_io.writer(f"{config}.gluonic")
 
