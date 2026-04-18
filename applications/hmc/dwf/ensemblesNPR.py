@@ -972,7 +972,7 @@ class job_measure_glue(job_reproduction_base):
                 res.append(corr)
 
                 p = S.J5q(prop_5d_s)
-                J5q = g.slice(g.trace(p * g.adj(p)), 3)
+                corr = g.slice(g.trace(p * g.adj(p)), 3)
                 corr = corr[t0:] + corr[:t0]
                 w.write(f"mres.ss.G5G5.{t0}", corr)
                 res.append(corr)
@@ -986,7 +986,7 @@ class job_measure_glue(job_reproduction_base):
                     res.append(corr)
 
                     p = S.J5q(prop_5d_c)
-                    J5q = g.slice(g.trace(p * g.adj(p)), 3)
+                    corr = g.slice(g.trace(p * g.adj(p)), 3)
                     corr = corr[t0:] + corr[:t0]
                     w.write(f"mres.cc.G5G5.{t0}", corr)
                     res.append(corr)
